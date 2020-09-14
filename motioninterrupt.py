@@ -1,41 +1,25 @@
-import RPi.GPIO as GPIO
 import time
 import datetime
 import os
-import mpu6050
+from mpu6050 import mpu6050
 
 trigger_fileextension = '.trg'
 trigger_path = 'trigger/'
 trigger = ""
 
-# define GPIO mode, pin and use pin as input
-GPIO.setmode(GPIO.BOARD)
-GPIO_SCL = 2
-GPIO_SDA = 3
-GPIO.setup(GPIO_SCL, GPIO.OUT)
-GPIO.setup(GPIO_SDA, GPIO.IN)
-
-print("MPU started")
-print("Waiting for MPU to get idle ...")
-
-# loop until PIR == 0
-while GPIO.input(GPIO_SDA) != 0:
-    time.sleep(0.2)
-print("Now ready for motion detection")
-
 # ToDo: Schwellenwerte definieren (wegen Atmung des Hundes) und dann mittels 1 bzw 0 den motiontrigger von unten anpassen
 
 mpu = mpu6050(0x68)
 
-# while True:
-#     print("Temp : "+str(mpu.get_temp()))
-#     print()
-#
-#     #accel_data = mpu.get_accel_data()
-#     print("Acc X : "+str(accel_data['x']))
-#     print("Acc Y : "+str(accel_data['y']))
-#     print("Acc Z : "+str(accel_data['z']))
-#     print()
+while True:
+     print("Temp : "+str(mpu.get_temp()))
+     print()
+
+     accel_data = mpu.get_accel_data()
+     print("Acc X : "+str(accel_data['x']))
+     print("Acc Y : "+str(accel_data['y']))
+     print("Acc Z : "+str(accel_data['z']))
+     print()
 
 last_trigger = datetime.datetime.now()
 
@@ -65,9 +49,9 @@ def MPU_signal():
 
 
 # Event definition: on gpio state change call MPU_signal function
-GPIO.add_event_detect(GPIO_SDA, GPIO.BOTH, callback=MPU_signal)
 print("{0:%Y-%m-%d-%H-%M-%S} - Waiting for motion".format(datetime.datetime.now()))
 
 # Main loop
 while True:
-    time.sleep(60)
+    MPU_signal()
+    time.sleep(30)
