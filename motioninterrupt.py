@@ -11,17 +11,6 @@ trigger = ""
 
 mpu = mpu6050(0x68)
 
-#Just for testing the output, will be removed later 
-while True:
-     print("Temp : "+str(mpu.get_temp()))
-     print()
-
-     accel_data = mpu.get_accel_data()
-     print("Acc X : "+str(accel_data['x']))
-     print("Acc Y : "+str(accel_data['y']))
-     print("Acc Z : "+str(accel_data['z']))
-     print()
-
 #Trigger for comparing time duration
 last_trigger = datetime.datetime.now()
 
